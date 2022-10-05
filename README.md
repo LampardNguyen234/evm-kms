@@ -1,3 +1,6 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/LampardNguyen234/evm-kms)](https://goreportcard.com/report/github.com/LampardNguyen234/evm-kms)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/LampardNguyen234/evm-kms/blob/main/LICENSE)
+
 # EVM-Compatible KMS
 Key Management Service's client for EVM applications.
 
