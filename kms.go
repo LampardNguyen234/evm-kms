@@ -18,11 +18,11 @@ type KMSSigner interface {
 	// SignHash performs a signing operation for a given digested message.
 	SignHash(hash common.Hash) ([]byte, error)
 
-	// NewEVMTransactor returns a KMS-backed instance of bind.TransactOpts.
-	NewEVMTransactor() *bind.TransactOpts
+	// GetDefaultEVMTransactor returns the default KMS-backed instance of bind.TransactOpts.
+	GetDefaultEVMTransactor() *bind.TransactOpts
 
-	// NewEVMSignerFn returns a new KMS-backed bind.SignerFn instance.
-	NewEVMSignerFn() bind.SignerFn
+	// GetEVMSignerFn returns the KMS-backed bind.SignerFn instance.
+	GetEVMSignerFn() bind.SignerFn
 
 	// HasSignedTx checks if the given transaction has been signed by the KMS.
 	HasSignedTx(*types.Transaction) (bool, error)
