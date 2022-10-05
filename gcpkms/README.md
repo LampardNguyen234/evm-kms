@@ -83,7 +83,6 @@ type Config struct {
 }
 ```
 
-### Create the client
 Here is an example config:
 ```json
 {
@@ -98,6 +97,8 @@ Here is an example config:
   "ChainID": 1
 }
 ```
+
+### Create the client
 
 Then, create a client using the `NewGoogleKMSClient` function.
 ```go
