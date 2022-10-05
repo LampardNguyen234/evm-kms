@@ -2,7 +2,7 @@
 Key Management Service's client for EVM applications.
 
 ## Status
-This product is currently in _beta quality_, use it at your own risk. 
+This product is currently in _beta quality_, take your own risk. 
 
 ### TODOs
 - [X] [Google Cloud Platform KMS](./gcpkms/README.md)
