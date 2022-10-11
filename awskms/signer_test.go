@@ -1,4 +1,4 @@
-package gcpkms
+package awskms
 
 import (
 	"context"
@@ -6,6 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/LampardNguyen234/evm-kms/common/erc20"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -18,9 +21,6 @@ import (
 	"time"
 )
 
-var cfg *Config
-var c *GoogleKMSClient
-
 var (
 	receiverAddr = common.HexToAddress("0x243e9517a24813a2d73e9a74cd2c1c699d0ff7a5")
 	rpcHost      = "https://rpc-mumbai.maticvigil.com/"
@@ -28,24 +28,58 @@ var (
 	numTests     = 10
 )
 
-func init() {
-	var err error
-	cfg = &Config{
-		ProjectID:          "evm-kms",
-		LocationID:         "us-west1",
-		CredentialLocation: "/Users/SomeUser/.cred/gcp-credential.json",
-		Key: Key{
-			Keyring: "my-keying-name",
-			Name:    "evm-ecdsa",
-			Version: "1",
-		},
-		ChainID: 80001,
-	}
+const (
+	awsRegion       = "AWS_REGION"
+	accessKeyId     = "ACCESS_KEY"
+	secretAccessKey = "SECRET_KEY"
+)
 
-	c, err = NewGoogleKMSClient(context.Background(), *cfg)
+var c *AmazonKMSClient
+
+func init() {
+	ctx := context.Background()
+
+	cfg := Config{
+		KeyID:   "KEY_ID",
+		ChainID: 1,
+	}
+	awsCfg, err := config.LoadDefaultConfig(ctx,
+		config.WithRegion(awsRegion),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+			accessKeyId, secretAccessKey, "")))
 	if err != nil {
 		panic(err)
 	}
+	kmsClient := kms.NewFromConfig(awsCfg)
+
+	c, err = NewAmazonKMSClient(ctx, cfg, kmsClient)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestAmazonKMSClient_GetPublicKey(t *testing.T) {
+	pubKey, err := c.GetPublicKey()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("pubKey: %x\n", secp256k1.CompressPubkey(pubKey.X, pubKey.Y))
+}
+
+func TestAmazonKMSClient_GetAddress(t *testing.T) {
+	address := c.GetAddress()
+
+	fmt.Printf("address: %v\n", address)
+}
+
+func TestAmazonKMSClient_Sign(t *testing.T) {
+	msg := []byte("Hello World")
+	sig, err := c.SignHash(crypto.Keccak256Hash(msg))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("sig: %x\n", sig)
 }
 
 func waitForReceipt(evmClient *ethclient.Client, txHash common.Hash) (*types.Receipt, error) {
@@ -64,36 +98,6 @@ func waitForReceipt(evmClient *ethclient.Client, txHash common.Hash) (*types.Rec
 			}
 			return receipt, nil
 		}
-	}
-}
-
-func TestDescribe(t *testing.T) {
-	err := c.describe()
-	if err != nil {
-		panic(err)
-	}
-}
-
-func TestGoogleKMSClient_GetPublicKey(t *testing.T) {
-	pubKey, err := c.GetPublicKey()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("pubKey: %x\n", secp256k1.CompressPubkey(pubKey.X, pubKey.Y))
-}
-
-func TestGoogleKMSClient_GetAddress(t *testing.T) {
-	address := c.GetAddress()
-
-	fmt.Printf("address: %v\n", address)
-}
-
-func TestGoogleKMSClient_Sign(t *testing.T) {
-	msg := []byte("Hello World")
-	_, err := c.SignHash(crypto.Keccak256Hash(msg))
-	if err != nil {
-		panic(err)
 	}
 }
 
@@ -216,7 +220,7 @@ func TestSendERC20(t *testing.T) {
 		}
 
 		value, _ := rand.Int(rand.Reader, new(big.Int).SetUint64(
-			uint64(math.Pow(10, float64(decimals.Uint64()/2)))))
+			uint64(math.Pow(10, float64(decimals.Uint64()/3)))))
 		value = value.Add(value, new(big.Int).SetUint64(1))
 		fmt.Printf("transferredValue: %v\n", value.String())
 

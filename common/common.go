@@ -25,6 +25,12 @@ func KmsToEVMSignature(pubKey ecdsa.PublicKey,
 	kmsSig KmsSignature,
 	digestedMsg common.Hash,
 ) ([]byte, error) {
+	// For a signature to be valid, s must be less than n/2 + 1. Therefore, we first adjust s here.
+	// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-2.md
+	if kmsSig.S.Cmp(CurveOrderHalf) > 0 {
+		kmsSig.S = new(big.Int).Sub(CurveOrder, kmsSig.S)
+	}
+
 	// re-verify the signature
 	if !ecdsa.Verify(&pubKey, digestedMsg[:], kmsSig.R, kmsSig.S) {
 		return nil, fmt.Errorf("failed to verify signature")

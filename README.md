@@ -4,12 +4,15 @@
 # EVM-Compatible KMS
 Key Management Service's client for EVM applications.
 
+## Dependencies
+See [go.mod](./go.mod)
+
 ## Status
 This product is currently in _beta quality_, take your own risk. 
 
 ### TODOs
 - [X] [Google Cloud Platform KMS](./gcpkms/README.md)
-- [ ] Amazon Web Services KMS
+- [X] [Amazon Web Services KMS](./awskms/README.md)
 
 ## Contributions
 You are encouraged to open an [issue](https://github.com/LampardNguyen234/evm-kms/issues/new) if you encounter a problem
