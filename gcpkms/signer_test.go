@@ -5,13 +5,14 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
-	"github.com/LampardNguyen234/evm-kms/gcpkms/test/erc20"
+	"github.com/LampardNguyen234/evm-kms/common/erc20"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/crypto/secp256k1"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"math"
 	"math/big"
 	"testing"
 	"time"
@@ -22,23 +23,23 @@ var c *GoogleKMSClient
 
 var (
 	receiverAddr = common.HexToAddress("0x243e9517a24813a2d73e9a74cd2c1c699d0ff7a5")
-	rpcHost      = "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-	erc20Address = common.HexToAddress("0xFab46E002BbF0b4509813474841E0716E6730136")
-	numTests     = 5
+	rpcHost      = "https://rpc-mumbai.maticvigil.com/"
+	erc20Address = common.HexToAddress("0x2d7882beDcbfDDce29Ba99965dd3cdF7fcB10A1e")
+	numTests     = 10
 )
 
 func init() {
 	var err error
 	cfg = &Config{
 		ProjectID:          "evm-kms",
-		LocationID:         "us-west1",
-		CredentialLocation: "/Users/SomeUser/.cred/gcp-credential.json",
+		LocationID:         "asia-southeast1",
+		CredentialLocation: "/Users/lap02809/.cred/evm-kms-d3da56452b83.json",
 		Key: Key{
-			Keyring: "my-keying-name",
+			Keyring: "ends",
 			Name:    "evm-ecdsa",
 			Version: "1",
 		},
-		ChainID: 1,
+		ChainID: 80001,
 	}
 
 	c, err = NewGoogleKMSClient(context.Background(), *cfg)
@@ -201,7 +202,7 @@ func TestSendERC20(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
-		gas := uint64(50000)
+		gas := uint64(100000)
 
 		transactor := &bind.TransactOpts{
 			From:      myAddress,
@@ -214,7 +215,8 @@ func TestSendERC20(t *testing.T) {
 			Context:   ctx,
 		}
 
-		value, _ := rand.Int(rand.Reader, new(big.Int).Mul(new(big.Int).SetUint64(1), decimals))
+		value, _ := rand.Int(rand.Reader, new(big.Int).SetUint64(
+			uint64(math.Pow(10, float64(decimals.Uint64()/2)))))
 		value = value.Add(value, new(big.Int).SetUint64(1))
 		fmt.Printf("transferredValue: %v\n", value.String())
 

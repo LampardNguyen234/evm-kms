@@ -143,7 +143,7 @@ See [TestSendETH](signer_test.go).
 
 ### Send ERC20
 The [abigen](https://geth.ethereum.org/docs/dapp/native-bindings) tool generates `.go` binding files that are able to directly operate with the `*bind.TransactOpts` type. 
-An example of this is [here](./test/erc20/ERC20.go). The `Transfer` function takes as input a `*bind.TransactOpts`, which
+An example of this is [here](../common/erc20/ERC20.go). The `Transfer` function takes as input a `*bind.TransactOpts`, which
 can be retrieved via the `GetDefaultEVMTransactor` function of the client, or can be constructed manually, as long as 
 a `bind.SignerFn` is supplied.
 ```go
