@@ -12,19 +12,6 @@ This package is dedicated to doing so.
 import "github.com/LampardNguyen234/evm-kms/gcpkms"
 ```
 
-## Dependencies
-```go
-go 1.18
-
-require (
-	cloud.google.com/go/kms v1.4.0
-	github.com/ethereum/go-ethereum v1.10.25
-	google.golang.org/api v0.98.0
-	google.golang.org/genproto v0.0.0-20220930163606-c98284e70a91
-	google.golang.org/protobuf v1.28.1
-)
-```
-
 ## Prerequisites
 ### Create a KMS Key
 In order to sign Ethereum transactions using this package, you need to create a

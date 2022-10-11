@@ -4,6 +4,9 @@
 # EVM-Compatible KMS
 Key Management Service's client for EVM applications.
 
+## Dependencies
+See [go.mod](./go.mod)
+
 ## Status
 This product is currently in _beta quality_, take your own risk. 
 
