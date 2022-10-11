@@ -32,10 +32,10 @@ func init() {
 	var err error
 	cfg = &Config{
 		ProjectID:          "evm-kms",
-		LocationID:         "asia-southeast1",
-		CredentialLocation: "/Users/lap02809/.cred/evm-kms-d3da56452b83.json",
+		LocationID:         "us-west1",
+		CredentialLocation: "/Users/SomeUser/.cred/gcp-credential.json",
 		Key: Key{
-			Keyring: "ends",
+			Keyring: "my-keying-name",
 			Name:    "evm-ecdsa",
 			Version: "1",
 		},
