@@ -21,7 +21,7 @@ const (
 	signingMessageType = "DIGEST"
 )
 
-// AmazonKMSClient implements basic functionalities of a Google KMS client for signing transactions.
+// AmazonKMSClient implements basic functionalities of an Amazon Web Services' KMS client for signing transactions.
 type AmazonKMSClient struct {
 	kmsClient *kms.Client
 	ctx       context.Context
