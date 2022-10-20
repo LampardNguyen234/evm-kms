@@ -1,0 +1,18 @@
+{
+  "type": "gcp",
+  "gcp": {
+    "ProjectID": "evm-kms",
+    "LocationID": "us-west1",
+    "CredentialLocation": "/Users/SomeUser/.cred/gcp-credential.json",
+    "Key": {
+      "Keyring": "my-keying-name",
+      "Name": "evm-ecdsa",
+      "Version": "1"
+    },
+    "ChainID": 1
+  },
+  "aws": {
+    "KeyID": "KEY_ID",
+    "ChainID": 1
+  }
+}
