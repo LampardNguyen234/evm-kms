@@ -26,4 +26,7 @@ type KMSSigner interface {
 
 	// HasSignedTx checks if the given transaction has been signed by the KMS.
 	HasSignedTx(*types.Transaction) (bool, error)
+
+	// WithSigner assigns the given signer to the current KMSSigner.
+	WithSigner(signer types.Signer)
 }
