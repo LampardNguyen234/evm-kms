@@ -162,6 +162,11 @@ func (c GoogleKMSClient) HasSignedTx(tx *types.Transaction) (bool, error) {
 	return true, nil
 }
 
+// WithSigner assigns the given signer to the GoogleKMSClient.
+func (c *GoogleKMSClient) WithSigner(signer types.Signer) {
+	c.signer = signer
+}
+
 func (c GoogleKMSClient) getPublicKey() (*ecdsa.PublicKey, error) {
 	req := &kmspb.GetPublicKeyRequest{
 		Name: fmt.Sprintf("projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/%s",
