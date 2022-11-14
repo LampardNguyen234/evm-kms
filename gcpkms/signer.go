@@ -167,6 +167,14 @@ func (c *GoogleKMSClient) WithSigner(signer types.Signer) {
 	c.signer = signer
 }
 
+// WithChainID assigns given chainID (and updates the corresponding signer) to the GoogleKMSClient.
+func (c *GoogleKMSClient) WithChainID(chainID *big.Int) {
+	if c.cfg.ChainID != chainID.Uint64() {
+		c.cfg.ChainID = chainID.Uint64()
+		c.signer = types.NewLondonSigner(chainID)
+	}
+}
+
 func (c GoogleKMSClient) getPublicKey() (*ecdsa.PublicKey, error) {
 	req := &kmspb.GetPublicKeyRequest{
 		Name: fmt.Sprintf("projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/%s",

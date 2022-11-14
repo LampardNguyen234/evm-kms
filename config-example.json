@@ -13,6 +13,10 @@
   },
   "aws": {
     "KeyID": "KEY_ID",
-    "ChainID": 1
+    "ChainID": 1,
+    "Region": "us-west-1",
+    "AccessKeyID": "ACCESS_KEY_ID",
+    "SecretAccessKey": "SECRET_ACCESS_KEY",
+    "SessionToken": "SESSION_TOKEN"
   }
 }

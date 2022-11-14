@@ -24,7 +24,7 @@ type Config struct {
 	GcpConfig gcpkms.Config `json:"gcp"`
 
 	// AwsConfig is the detail of the AWS KMS Config.
-	AwsConfig awskms.Config `json:"aws"`
+	AwsConfig awskms.StaticCredentialsConfig `json:"aws"`
 }
 
 // IsValid checks if the current Config is valid.
