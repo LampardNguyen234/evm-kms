@@ -160,6 +160,11 @@ func (c AmazonKMSClient) HasSignedTx(tx *types.Transaction) (bool, error) {
 	return true, nil
 }
 
+// WithSigner assigns the given signer to the AmazonKMSClient.
+func (c *AmazonKMSClient) WithSigner(signer types.Signer) {
+	c.signer = signer
+}
+
 func (c AmazonKMSClient) getPublicKey() (*ecdsa.PublicKey, error) {
 	getPubKeyOutput, err := c.kmsClient.GetPublicKey(c.ctx, &kms.GetPublicKeyInput{
 		KeyId: aws.String(c.cfg.KeyID),
