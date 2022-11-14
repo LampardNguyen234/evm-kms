@@ -32,6 +32,26 @@ if err != nil {
 }
 ```
 
+Or one can create a KMSSigner directly from a given config file:
+```go
+cfg, err := LoadStaticCredentialsConfigConfigFromFile("./config-static-credentials-example.json")
+c, err := NewAmazonKMSClientWithStaticCredentials(ctx, *cfg)
+if err != nil {
+    panic(err)
+}
+```
+The config file looks like the following:
+```json
+{
+    "KeyID": "KEY_ID",
+    "ChainID": 1,
+    "Region": "AWS_REGION",
+    "AccessKeyID": "ACCESS_KEY",
+    "SecretAccessKey": "ACCESS_SECRET",
+    "SessionToken": "SESSION"
+}
+```
+
 ### Send ETH
 #### Create a transaction
 ```go

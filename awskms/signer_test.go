@@ -6,9 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/LampardNguyen234/evm-kms/common/erc20"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials"
-	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -28,34 +25,17 @@ var (
 	numTests     = 10
 )
 
-const (
-	awsRegion       = "AWS_REGION"
-	accessKeyId     = "ACCESS_KEY"
-	secretAccessKey = "SECRET_KEY"
-)
-
 var c *AmazonKMSClient
 
 func init() {
 	ctx := context.Background()
 
-	cfg := Config{
-		KeyID:   "KEY_ID",
-		ChainID: 1,
-	}
-	awsCfg, err := config.LoadDefaultConfig(ctx,
-		config.WithRegion(awsRegion),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
-			accessKeyId, secretAccessKey, "")))
+	cfg, err := LoadStaticCredentialsConfigConfigFromFile("./config-static-credentials-example.json")
+	c, err = NewAmazonKMSClientWithStaticCredentials(ctx, *cfg)
 	if err != nil {
 		panic(err)
 	}
-	kmsClient := kms.NewFromConfig(awsCfg)
-
-	c, err = NewAmazonKMSClient(ctx, cfg, kmsClient)
-	if err != nil {
-		panic(err)
-	}
+	c.WithChainID(new(big.Int).SetUint64(80001))
 }
 
 func TestAmazonKMSClient_GetPublicKey(t *testing.T) {

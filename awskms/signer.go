@@ -7,6 +7,8 @@ import (
 	"fmt"
 	common2 "github.com/LampardNguyen234/evm-kms/common"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -72,6 +74,37 @@ func NewAmazonKMSClient(ctx context.Context, cfg Config, kmsClient *kms.Client, 
 	}
 
 	c := &AmazonKMSClient{kmsClient: kmsClient, ctx: ctx, cfg: cfg, signer: signer}
+
+	pubKey, err := c.getPublicKey()
+	if err != nil {
+		return nil, err
+	}
+	c.publicKey = pubKey
+
+	return c, nil
+}
+
+// NewAmazonKMSClientWithStaticCredentials is an alternative of NewAmazonKMSClient but uses a StaticCredentialsConfig.
+func NewAmazonKMSClientWithStaticCredentials(ctx context.Context, cfg StaticCredentialsConfig, txSigner ...types.Signer) (*AmazonKMSClient, error) {
+	if _, err := cfg.IsValid(); err != nil {
+		return nil, fmt.Errorf("invalid config")
+	}
+
+	signer := types.NewLondonSigner(new(big.Int).SetUint64(cfg.ChainID))
+	if len(txSigner) > 0 {
+		signer = txSigner[0]
+	}
+
+	awsCfg, err := config.LoadDefaultConfig(ctx,
+		config.WithRegion(cfg.Region),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+			cfg.AccessKeyID, cfg.SecretAccessKey, cfg.SessionToken)))
+	if err != nil {
+		panic(err)
+	}
+	kmsClient := kms.NewFromConfig(awsCfg)
+
+	c := &AmazonKMSClient{kmsClient: kmsClient, ctx: ctx, cfg: cfg.Config, signer: signer}
 
 	pubKey, err := c.getPublicKey()
 	if err != nil {
@@ -163,6 +196,14 @@ func (c AmazonKMSClient) HasSignedTx(tx *types.Transaction) (bool, error) {
 // WithSigner assigns the given signer to the AmazonKMSClient.
 func (c *AmazonKMSClient) WithSigner(signer types.Signer) {
 	c.signer = signer
+}
+
+// WithChainID assigns given chainID (and updates the corresponding signer) to the AmazonKMSClient.
+func (c *AmazonKMSClient) WithChainID(chainID *big.Int) {
+	if c.cfg.ChainID != chainID.Uint64() {
+		c.cfg.ChainID = chainID.Uint64()
+		c.signer = types.NewLondonSigner(chainID)
+	}
 }
 
 func (c AmazonKMSClient) getPublicKey() (*ecdsa.PublicKey, error) {
