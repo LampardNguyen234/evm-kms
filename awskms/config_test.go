@@ -15,3 +15,13 @@ func TestLoadConfigFromFile(t *testing.T) {
 	jsb, _ := json.MarshalIndent(cfg, "", "\t")
 	fmt.Println(string(jsb))
 }
+
+func TestLoadStaticCredentialsConfigConfigFromFile(t *testing.T) {
+	filePath := "./static-credentials-config-example.json"
+	cfg, err := LoadStaticCredentialsConfigConfigFromFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+	jsb, _ := json.MarshalIndent(cfg, "", "\t")
+	fmt.Println(string(jsb))
+}
