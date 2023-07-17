@@ -19,7 +19,7 @@ KMS key in GCP. To do this, please follow the instruction [here](https://cloud.g
 Remember to choose `Purpose = Asymmetric sign` and `Algorithm = Elliptic Curve secp256k1 - SHA256 Digest` in the 
 `Create key` screen. 
 
-### Download Credential
+### Download Credential (Optional)
 Head over [the `IAM` page of the GCP](https://cloud.google.com/iam/docs/service-accounts), create a service account to use to API and download the credential.
 The credential file looks like the following:
 ```json
