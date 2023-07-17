@@ -38,7 +38,11 @@ func NewGoogleKMSClient(ctx context.Context, cfg Config, txSigner ...types.Signe
 	if _, err := cfg.IsValid(); err != nil {
 		return nil, fmt.Errorf("invalid config")
 	}
-	client, err := kms.NewKeyManagementClient(ctx, option.WithCredentialsFile(cfg.CredentialLocation))
+	options := make([]option.ClientOption, 0)
+	if cfg.CredentialLocation != "" {
+		options = append(options, option.WithCredentialsFile(cfg.CredentialLocation))
+	}
+	client, err := kms.NewKeyManagementClient(ctx, options...)
 	if err != nil {
 		return nil, err
 	}

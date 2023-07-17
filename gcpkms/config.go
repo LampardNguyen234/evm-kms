@@ -58,10 +58,6 @@ func (cfg Config) IsValid() (bool, error) {
 		return false, fmt.Errorf("empty LocationID")
 	}
 
-	if cfg.CredentialLocation == "" {
-		return false, fmt.Errorf("empty CredentialLocation")
-	}
-
 	if !cfg.Key.isValid() {
 		return false, fmt.Errorf("invalid Key")
 	}
